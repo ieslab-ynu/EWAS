@@ -1,8 +1,8 @@
-## Robust Activation Scaling to Defend Adversarial Attack
-Official code for [Robust Activation Scaling to Defend Adversarial Attack]()
+## Element-Wise Activation Scaling (EWAS)
+Official code for [Improving Robustness of Convolutional Neural Networks Using Element-Wise Activation Scaling]()
 
 
-![RAS](figures/ras.png)
+![EWAS](figures/ras.png)
 
 --------------------
 ### Requirements
