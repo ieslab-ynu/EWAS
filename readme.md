@@ -2,7 +2,7 @@
 Official code for [Improving Robustness of Convolutional Neural Networks Using Element-Wise Activation Scaling]()
 
 
-![EWAS](figures/ras.png)
+![EWAS](figures/my-proposed.png)
 
 --------------------
 ### Requirements
