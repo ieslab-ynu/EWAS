@@ -19,16 +19,23 @@ First, you need to create one empty folder and name it as `data` to store the da
 
 run the command
 ```commandline
-python AT_with_loss.py --net wrn_ras 
-python AT_with_loss.py --net resnet_ras
-python MART_with_loss.py --net wrn_ras 
-python MART_with_loss.py --net resnet_ras 
-python TRADES_with_loss.py --net wrn_ras
-python TRADES_with_loss.py --net resnet_ras 
+python AT_with_loss.py --net wrn_ras --lam 0.01
+python AT_with_loss.py --net resnet_ras --lam 0.01
+python MART_with_loss.py --net wrn_ras --lam 0.01
+python MART_with_loss.py --net resnet_ras --lam 0.01 
+python TRADES_with_loss.py --net wrn_ras --lam 0.01
+python TRADES_with_loss.py --net resnet_ras --lam 0.01 
 ```
 
 The results are stored in folds named with adversarial training methods and name with model name and training lambda.
 
+### Evaluation
+
+run the command
+```commandline
+python white_box_robust_eval.py --net wrn_ras --ckps_path './AT_results/last_rap-resnet18_lam0.01.pth.tar' --lam 0.01
+...
+```
 
 The results of CIFAR10 as follows:
 
