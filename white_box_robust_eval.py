@@ -16,7 +16,7 @@ parser.add_argument('--dataset', type=str, default="cifar10", help="choose from 
 parser.add_argument('--num_workers', type=int, default=0, help="dataloader number of workers")
 parser.add_argument('--net', type=str, default="resnet_ras",
                     help="decide which network to use,choose from rap-resnet18,rap-wrn")
-parser.add_argument('--ckps_path', type=str, default='./AT_results/last_rap-resnet18_lam0.01.pth.tar', help='load checkpoint path')
+parser.add_argument('--ckps_path', type=str, default='./AT_results/last_resnet_ras_lam0.01.pth.tar', help='load checkpoint path')
 parser.add_argument('--lam', type=float, default=0.01, help='lambda to control l1')
 
 args = parser.parse_args()
