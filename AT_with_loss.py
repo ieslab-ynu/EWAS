@@ -48,7 +48,7 @@ if not os.path.exists(out_dir):
 def train(model, train_loader, optimizer):
     starttime = datetime.datetime.now()
     loss_sum = 0
-    bp_count = 0
+
 
     attacker = attack.AttackPGD(model, num_steps=args.num_steps, step_size=args.step_size, epsilon=args.epsilon)
     attacker = attacker.cuda()
@@ -74,10 +74,10 @@ def train(model, train_loader, optimizer):
         loss.backward()
         optimizer.step()
 
-    bp_count_avg = bp_count / len(train_loader.dataset)
+
     endtime = datetime.datetime.now()
     time = (endtime - starttime).seconds
-    return time, loss_sum, bp_count_avg
+    return time, loss_sum
 
 
 
@@ -125,7 +125,6 @@ start_epoch = 0
 # Resume
 title = 'AT train'
 if args.resume:
-    # resume directly point to resnet18-c10.pth.tar e.g., --resume='./out-dir/resnet18-c10.pth.tar'
     print('==> Adversarial Training Resuming from checkpoint ..')
     print(args.resume)
     assert os.path.isfile(args.resume)
@@ -148,7 +147,7 @@ cw_acc = 0
 best_epoch = 0
 best_robust = 0
 for epoch in range(start_epoch, args.epochs):
-    train_time, train_loss, bp_count_avg = train(model, train_loader, optimizer)
+    train_time, train_loss = train(model, train_loader, optimizer)
     if epoch == 0 or (epoch + 1) % 10 == 0 or (epoch >= 60):
         ## Evalutions the same as DAT.
         loss, test_nat_acc = attack.eval_clean(model, test_loader)
@@ -160,12 +159,11 @@ for epoch in range(start_epoch, args.epochs):
                                           loss_fn="cw", category="Madry", rand_init=True, num_classes=num_classes,lam = args.lam)
 
         print(
-            'Epoch: [%d | %d] | lr: %.2f | Train Time: %.2f s | BP Average: %.2f | Natural Test Acc %.2f | FGSM Test Acc %.2f | PGD20 Test Acc %.2f | CW Test Acc %.2f |\n' % (
+            'Epoch: [%d | %d] | lr: %.2f | Train Time: %.2f s | Natural Test Acc %.2f | FGSM Test Acc %.2f | PGD20 Test Acc %.2f | CW Test Acc %.2f |\n' % (
                 epoch + 1,
                 args.epochs,
                 optimizer.param_groups[0]['lr'],
                 train_time,
-                bp_count_avg,
                 test_nat_acc,
                 fgsm_acc,
                 test_pgd20_acc,
@@ -178,7 +176,6 @@ for epoch in range(start_epoch, args.epochs):
             save_checkpoint({
                 'epoch': epoch + 1,
                 'state_dict': model.state_dict(),
-                'bp_avg': bp_count_avg,
                 'test_nat_acc': test_nat_acc,
                 'test_pgd20_acc': test_pgd20_acc,
                 'optimizer': optimizer.state_dict(),
@@ -191,7 +188,6 @@ for epoch in range(start_epoch, args.epochs):
         save_checkpoint({
             'epoch': epoch + 1,
             'state_dict': model.state_dict(),
-            'bp_avg': bp_count_avg,
             'test_nat_acc': test_nat_acc,
             'test_pgd20_acc': test_pgd20_acc,
             'optimizer': optimizer.state_dict(),
