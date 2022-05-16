@@ -14,9 +14,9 @@ parser = argparse.ArgumentParser(description='PyTorch Feature Visualization')
 parser.add_argument('--seed', type=int, default=7, metavar='S', help='random seed')
 parser.add_argument('--dataset', type=str, default="cifar10", help="choose from cifar10,svhn")
 parser.add_argument('--num_workers', type=int, default=0, help="dataloader number of workers")
-parser.add_argument('--net', type=str, default="resnet_ras",
-                    help="decide which network to use,choose from rap-resnet18,rap-wrn")
-parser.add_argument('--ckps_path', type=str, default='./AT_results/last_resnet_ras_lam0.01.pth.tar', help='load checkpoint path')
+parser.add_argument('--net', type=str, default="resnet_ewas",
+                    help="decide which network to use,choose from resnet_ewas,wrn_ewas")
+parser.add_argument('--ckps_path', type=str, default=None, help='load checkpoint path')
 parser.add_argument('--lam', type=float, default=0.01, help='lambda to control l1')
 
 args = parser.parse_args()
@@ -41,12 +41,12 @@ num_classes = 10
 
 print('==> Load Model')
 
-if args.net == "wrn_ras":
+if args.net == "wrn_ewas":
     model = Wide_ResNet_RAS(num_classes=num_classes).cuda()
-    net = "wrn_ras"
-if args.net == "resnet_ras":
+    net = "wrn_ewas"
+if args.net == "resnet_ewas":
     model = ResNet_RAS(num_classes=num_classes).cuda()
-    net = "resnet_ras"
+    net = "resnet_ewas"
 
 
 model = torch.nn.DataParallel(model)
