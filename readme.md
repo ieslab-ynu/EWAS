@@ -22,12 +22,12 @@ First, you need to create one empty folder and name it as `data` to store the da
 
 run the command
 ```commandline
-python AT_with_loss.py --net wrn_ras --lam 0.01
-python AT_with_loss.py --net resnet_ras --lam 0.01
-python MART_with_loss.py --net wrn_ras --lam 0.01
-python MART_with_loss.py --net resnet_ras --lam 0.01 
-python TRADES_with_loss.py --net wrn_ras --lam 0.01
-python TRADES_with_loss.py --net resnet_ras --lam 0.01 
+python AT_with_loss.py --net wrn_ewas --lam 0.01
+python AT_with_loss.py --net resnet_ewas --lam 0.01
+python MART_with_loss.py --net wrn_ewas --lam 0.01
+python MART_with_loss.py --net resnet_ewas --lam 0.01 
+python TRADES_with_loss.py --net wrn_ewas --lam 0.01
+python TRADES_with_loss.py --net resnet_ewas --lam 0.01 
 ```
 
 The results are stored in folds named with adversarial training methods and name with model name and training lambda.
@@ -36,9 +36,9 @@ The results are stored in folds named with adversarial training methods and name
 
 run the command
 ```commandline
-python white_box_robust_eval.py --net resnet_ras --ckps_path ./AT_results/last_resnet_ras_lam0.01.pth.tar --lam 0.01
-python white_box_robust_eval.py --net resnet_ras --ckps_path ./MART_results/last_resnet_ras_lam0.01.pth.tar --lam 0.01
-python white_box_robust_eval.py --net resnet_ras --ckps_path ./TRADES_results/last_resnet_ras_lam0.01.pth.tar --lam 0.01
+python white_box_robust_eval.py --net resnet_ewas --ckps_path ./AT_results/last_resnet_ras_lam0.01.pth.tar --lam 0.01
+python white_box_robust_eval.py --net resnet_ewas --ckps_path ./MART_results/last_resnet_ras_lam0.01.pth.tar --lam 0.01
+python white_box_robust_eval.py --net resnet_ewas --ckps_path ./TRADES_results/last_resnet_ras_lam0.01.pth.tar --lam 0.01
 ```
 
 The results of CIFAR10 as follows:
