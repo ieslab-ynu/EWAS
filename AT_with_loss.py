@@ -20,8 +20,8 @@ parser.add_argument('--epsilon', type=float, default=0.031, help='perturbation b
 parser.add_argument('--num_steps', type=int, default=10, help='maximum perturbation step K')
 parser.add_argument('--step_size', type=float, default=0.007, help='step size')
 parser.add_argument('--seed', type=int, default=7, metavar='S', help='random seed')
-parser.add_argument('--net', type=str, default="wrn_ras",
-                    help="decide which network to use,choose from resnet_ras,wrn_ras")
+parser.add_argument('--net', type=str, default="resnet_ewas",
+                    help="decide which network to use,choose from resnet_ewas,wrn_ewas")
 parser.add_argument('--num_workers', type=int, default=0, help="dataloader number of workers")
 parser.add_argument('--rand_init', type=bool, default=True, help="whether to initialize adversarial sample with random noise")
 parser.add_argument('--out_dir', type=str, default='./AT_results', help='dir of output')
@@ -107,12 +107,12 @@ num_classes = 10
 
 print('==> Load Model')
 
-if args.net == "wrn_ras":
+if args.net == "wrn_ewas":
     model = Wide_ResNet_RAS(num_classes=num_classes).cuda()
-    net = "wrn_ras"
-if args.net == "resnet_ras":
+    net = "wrn_ewas"
+if args.net == "resnet_ewas":
     model = ResNet_RAS(num_classes=num_classes).cuda()
-    net = "resnet_ras"
+    net = "resnet_ewas"
 
 print(net)
 
