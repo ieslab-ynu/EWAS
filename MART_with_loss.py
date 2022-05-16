@@ -21,8 +21,8 @@ parser.add_argument('--epsilon', type=float, default=0.031, help='perturbation b
 parser.add_argument('--num_steps', type=int, default=10, help='maximum perturbation step K')
 parser.add_argument('--step_size', type=float, default=0.007, help='step size')
 parser.add_argument('--seed', type=int, default=7, metavar='S', help='random seed')
-parser.add_argument('--net', type=str, default="resnet_ras",
-                    help="decide which network to use,choose from resnet_ras,wrn_ras")
+parser.add_argument('--net', type=str, default="resnet_ewas",
+                    help="decide which network to use,choose from resnet_ewas,wrn_ewas")
 parser.add_argument('--beta',type=float,default=6.0,help='regularization parameter')
 parser.add_argument('--num_workers', type=int, default=0, help="dataloader number of workers")
 parser.add_argument('--rand_init', type=bool, default=True, help="whether to initialize adversarial sample with random noise")
@@ -107,7 +107,7 @@ def mart_loss(model,
         torch.sum(kl(torch.log(adv_probs + 1e-12), nat_probs), dim=1) * (1.0000001 - true_probs))
 
     extra_loss_robust = 0.
-    # for idx, output in enumerate(extra_outputs_nat):
+
     nat_probs_extra = F.softmax(mask_adv, dim=1)
     true_probs = torch.gather(nat_probs, 1, (y.unsqueeze(1)).long()).squeeze()
     extra_loss_robust += (1.0 / batch_size) * torch.sum(
@@ -122,7 +122,7 @@ def mart_loss(model,
 def train(model, train_loader, optimizer):
     starttime = datetime.datetime.now()
     loss_sum = 0
-    bp_count = 0
+
 
 
     for batch_idx, (data, target) in tqdm(enumerate(train_loader)):
@@ -137,11 +137,11 @@ def train(model, train_loader, optimizer):
         loss.backward()
         optimizer.step()
 
-    bp_count_avg = bp_count / len(train_loader.dataset)
+
     endtime = datetime.datetime.now()
     time = (endtime - starttime).seconds
 
-    return time, loss_sum, bp_count_avg
+    return time, loss_sum
 
 
 
@@ -171,12 +171,12 @@ num_classes = 10
 
 print('==> Load Model')
 
-if args.net == "wrn_ras":
+if args.net == "wrn_ewas":
     model = Wide_ResNet_RAS(num_classes=num_classes).cuda()
-    net = "wrn_ras"
-if args.net == "resnet_ras":
+    net = "wrn_ewas"
+if args.net == "resnet_ewas":
     model = ResNet_RAS(num_classes=num_classes).cuda()
-    net = "resnet_ras"
+    net = "resnet_ewas"
 
 
 
@@ -218,7 +218,7 @@ cw_acc = 0
 best_epoch = 0
 best_robust = 0
 for epoch in range(start_epoch, args.epochs):
-    train_time, train_loss, bp_count_avg = train(model, train_loader, optimizer)
+    train_time, train_loss = train(model, train_loader, optimizer)
     if epoch == 0 or (epoch+1) % 10 == 0 or (epoch >= 60):
         ## Evalutions the same as DAT.
         loss, test_nat_acc = attack.eval_clean(model, test_loader)
@@ -230,12 +230,12 @@ for epoch in range(start_epoch, args.epochs):
                                           loss_fn="cw", category="Madry", rand_init=True, num_classes=num_classes,lam = args.lam)
 
         print(
-            'Epoch: [%d | %d] | lr: %.2f | Train Time: %.2f s | BP Average: %.2f | Natural Test Acc %.2f | FGSM Test Acc %.2f | PGD20 Test Acc %.2f | CW Test Acc %.2f |\n' % (
+            'Epoch: [%d | %d] | lr: %.2f | Train Time: %.2f s | Natural Test Acc %.2f | FGSM Test Acc %.2f | PGD20 Test Acc %.2f | CW Test Acc %.2f |\n' % (
             epoch + 1,
             args.epochs,
             optimizer.param_groups[0]['lr'],
             train_time,
-            bp_count_avg,
+
             test_nat_acc,
             fgsm_acc,
             test_pgd20_acc,
@@ -248,7 +248,6 @@ for epoch in range(start_epoch, args.epochs):
             save_checkpoint({
                 'epoch': epoch + 1,
                 'state_dict': model.state_dict(),
-                'bp_avg': bp_count_avg,
                 'test_nat_acc': test_nat_acc,
                 'test_pgd20_acc': test_pgd20_acc,
                 'optimizer': optimizer.state_dict(),
@@ -260,7 +259,6 @@ for epoch in range(start_epoch, args.epochs):
         save_checkpoint({
         'epoch': epoch + 1,
         'state_dict': model.state_dict(),
-        'bp_avg': bp_count_avg,
         'test_nat_acc': test_nat_acc,
         'test_pgd20_acc': test_pgd20_acc,
         'optimizer': optimizer.state_dict(),
